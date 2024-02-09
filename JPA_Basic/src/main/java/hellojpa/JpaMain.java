@@ -17,17 +17,14 @@ public class JpaMain {
         try {
             Member findMember = em.find(Member.class, 1L);
 
-            /** 조회 **/
-//            System.out.println("findMember.getId() = " + findMember.getId());
-//            System.out.println("findMember.getName() = " + findMember.getName());
+            //객체를 생성한 상태(비영속)
+            Member member = new Member();
+            member.setId(100L);
+            member.setName("HelloJpa");
 
-            /** 삭제 **/
-//            em.remove(findMember); //삭제
-
-            /** 수정**/
-            findMember.setName("HelloJPA"); // 수정한 데이터를 따로 저장(em.persist(...);) 하지 않아도 됨.
-
-            tx.commit(); // 성공하면 커밋
+            //객체를 저장한 상태(영속)
+            //But 아직 DB에 저장된 것은 아님!
+            em.persist(member);
 
         } catch (Exception e) {
             tx.rollback(); // 문제가 생가면 롤백
