@@ -15,11 +15,17 @@ public class JpaMain {
         tx.begin(); // transaction 시작
 
         try {
-            Member member = new Member();
-            member.setId(2L);
-            member.setName("HelloB");
+            Member findMember = em.find(Member.class, 1L);
 
-            em.persist(member);
+            /** 조회 **/
+//            System.out.println("findMember.getId() = " + findMember.getId());
+//            System.out.println("findMember.getName() = " + findMember.getName());
+
+            /** 삭제 **/
+//            em.remove(findMember); //삭제
+
+            /** 수정**/
+            findMember.setName("HelloJPA"); // 수정한 데이터를 따로 저장(em.persist(...);) 하지 않아도 됨.
 
             tx.commit(); // 성공하면 커밋
 
