@@ -17,10 +17,12 @@ public class JpaMain {
         try {
 
             //영속
-            Member member = em.find(Member.class, 150L);
-            member.setName("hyeonbin");
+            Member member = new Member(200L, "member200");
+            em.persist(member);
 
-            // em.persist(member); (호출 안 하는 게 맞음)
+            em.flush();
+
+            System.out.println(" ============================== " );
 
             tx.commit();
 
