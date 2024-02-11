@@ -12,7 +12,8 @@ public class Member {
     private Long id;
 
     private String name;
-    private int haha; //validate에서 걸릴 필드
+    private int age;
+    //private int haha; //validate에서 걸릴 필드
 
     public Member(long id, String name) {
         this.id = id;
