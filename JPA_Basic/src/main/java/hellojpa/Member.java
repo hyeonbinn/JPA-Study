@@ -9,7 +9,7 @@ public class Member {
     @Column(name = "name")
     private String username;
     private Integer age;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private RoleType roleType;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
