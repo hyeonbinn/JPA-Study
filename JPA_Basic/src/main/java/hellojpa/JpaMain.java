@@ -15,16 +15,14 @@ public class JpaMain {
         tx.begin(); // transaction 시작
 
         try {
-            Member findMember = em.find(Member.class, 1L);
 
-            //객체를 생성한 상태(비영속)
-            Member member = new Member();
-            member.setId(100L);
-            member.setName("HelloJpa");
+            //영속
+            Member member = em.find(Member.class, 150L);
+            member.setName("hyeonbin");
 
-            //객체를 저장한 상태(영속)
-            //But 아직 DB에 저장된 것은 아님!
-            em.persist(member);
+            // em.persist(member); (호출 안 하는 게 맞음)
+
+            tx.commit();
 
         } catch (Exception e) {
             tx.rollback(); // 문제가 생가면 롤백
