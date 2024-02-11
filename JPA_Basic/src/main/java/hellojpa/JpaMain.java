@@ -16,15 +16,12 @@ public class JpaMain {
 
         try {
 
-            //영속
-            Member member = em.find(Member.class,150L);
-            member.setName("AAAAA");
+            Member member = new Member();
+            member.setId(2L);
+            member.setUsername("A");
+            member.setRoleType(RoleType.USER);
 
-            em.detach(member); //준영속 상태로 만듦 (JPA에서 관리 X)
-            //em.clear(); //영속성 컨텍스트를 완전히 초기화
-            //em.close(); //영속성 컨텍스트 종료
-
-            System.out.println(" ============================== " );
+            em.persist(member);
 
             tx.commit();
 
