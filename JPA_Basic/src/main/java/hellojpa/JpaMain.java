@@ -16,14 +16,29 @@ public class JpaMain {
 
         try {
 
-            Member member = new Member();
+            Member member1 = new Member();
+            member1.setUsername("A");
 
-            //우리가 직접 Id에 값을 넣으면 안됨 (DB에서 Id를 null로 인식하면, 값을 세팅)
+            Member member2 = new Member();
+            member2.setUsername("B");
 
-            member.setUsername("C");
+            Member member3 = new Member();
+            member3.setUsername("C");
 
-            System.out.println("=========================");
-            em.persist(member); //얘를 호출한 시점에 DB에 insert 쿼리를 날림
+            //DB SEQ = 1    |   1
+            //DB SEQ = 51   |   2
+            //DB SEQ = 51   |   3
+
+
+            em.persist(member1); //1,51
+            em.persist(member2); //MEMORY
+            em.persist(member3); //MEMORY
+
+
+            System.out.println("member1 = " + member1.getId());
+            System.out.println("member2 = " + member2.getId());
+            System.out.println("member3 = " + member3.getId());
+
             System.out.println("=========================");
 
             tx.commit();

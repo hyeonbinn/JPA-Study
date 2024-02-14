@@ -2,14 +2,15 @@ package hellojpa;
 import jakarta.persistence.*;
 
 @Entity
-@TableGenerator(
+@SequenceGenerator(
         name = "MEMBER_SEQ_GENERATOR",
-        table = "MY_SEQUENCES",
-        pkColumnValue = "MEMBER_SEQ", allocationSize = 1)
+        sequenceName = "MEMBER_SEQ",
+        initialValue = 1, allocationSize = 50) //50개를 미리 DB에 올려놓고 사용
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+                   generator = "MEMBER_SEQ_GENERATOR")
     private Long id;
     @Column(name = "name", nullable = false)
     private String username;
