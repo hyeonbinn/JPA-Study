@@ -18,9 +18,13 @@ public class JpaMain {
 
             Member member = new Member();
 
+            //우리가 직접 Id에 값을 넣으면 안됨 (DB에서 Id를 null로 인식하면, 값을 세팅)
+
             member.setUsername("C");
 
-            em.persist(member);
+            System.out.println("=========================");
+            em.persist(member); //얘를 호출한 시점에 DB에 insert 쿼리를 날림
+            System.out.println("=========================");
 
             tx.commit();
 
