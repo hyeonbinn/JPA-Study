@@ -15,34 +15,19 @@ public class JpaMain {
         tx.begin(); // transaction 시작
 
         try {
-
-            Member member1 = new Member();
-            member1.setUsername("A");
-
-            Member member2 = new Member();
-            member2.setUsername("B");
-
-            Member member3 = new Member();
-            member3.setUsername("C");
-
-            //DB SEQ = 1    |   1
-            //DB SEQ = 51   |   2
-            //DB SEQ = 51   |   3
+            //팀 저장
+            Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
 
 
-            em.persist(member1); //1,51
-            em.persist(member2); //MEMORY
-            em.persist(member3); //MEMORY
-
-
-            System.out.println("member1 = " + member1.getId());
-            System.out.println("member2 = " + member2.getId());
-            System.out.println("member3 = " + member3.getId());
-
-            System.out.println("=========================");
+            //회원 저장
+            Member member = new Member();
+            member.setName("member1");
+            member.setTeamId(team.getId());
+            em.persist(member);
 
             tx.commit();
-
         } catch (Exception e) {
             tx.rollback(); // 문제가 생가면 롤백
         } finally {
