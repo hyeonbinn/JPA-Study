@@ -24,8 +24,16 @@ public class JpaMain {
             //회원 저장
             Member member = new Member();
             member.setName("member1");
-            member.setTeamId(team.getId());
+            member.setTeam(team); //jpa가 team에서 pk를 꺼내서 fk로 사용함.
             em.persist(member);
+
+            Member findMember = em.find(Member.class, member.getId());
+            Team findTeam = findMember.getTeam(); //팀 아이디 찾아 쓰는 게 아니라 바로 사용할 수 있음.
+            System.out.println("findTemd = " + findTeam.getName());
+
+            /**다른 팀으로 변경하고 싶을 때
+            Team newTeam = em.find(Team.class, 100L); //DB에 100이 있다고 가정했을 때.
+            findMember.setTeam(newTeam); //db에서 fk가 업데이트 됨.**/
 
             tx.commit();
         } catch (Exception e) {

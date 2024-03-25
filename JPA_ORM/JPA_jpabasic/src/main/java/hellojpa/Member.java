@@ -7,8 +7,12 @@ public class Member {
     private Long id;
     @Column(name = "USERNAME")
     private String name;
-    @Column(name = "TEAM_ID")
-    private Long teamId;
+
+//    @Column(name = "TEAM_ID")
+//    private Long teamId;
+    @ManyToOne
+    @JoinColumn(name="TEAM_ID")
+    private Team team; //위 코드 대체
 
     public Long getId() {
         return id;
@@ -26,11 +30,11 @@ public class Member {
         this.name = name;
     }
 
-    public Long getTeamId() {
-        return teamId;
+    public Team getTeam() {
+        return team;
     }
 
-    public void setTeamId(Long teamId) {
-        this.teamId = teamId;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
