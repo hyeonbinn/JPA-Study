@@ -17,32 +17,17 @@ public class JpaMain {
         tx.begin(); // transaction 시작
 
         try {
-            //팀 저장
-            Team team = new Team();
-            team.setName("TeamA");
-            em.persist(team);
+           Member member = new Member();
+           member.setName("member1");
 
-            //회원 저장
-            Member member = new Member();
-            member.setName("member1");
-            member.setTeam(team); //연관관계 주인에 값을 넣어야 함.
-            em.persist(member);
+           em.persist(member);
 
-            /** Member 클래스에 연관관계 편의 메소드를 만들면서 그 안에
-             * 멤버에 팀을 세팅하는 시점에 같이 돌아가도록 코드 추가해놓음**/
-            //team.getMembers().add(member);
+           Team team = new Team();
+           team.setName("teamA");
+           //외래키가 member 테이블에 있기에 update 쿼리가 member에 나감.
+           team.getMembers().add(member);
 
-
-            em.flush();
-            em.clear();
-
-            Member findMember = em.find(Member.class, member.getId());
-
-            List<Member> members = findMember.getTeam().getMembers();
-
-            for (Member m : members) {
-                System.out.println("m = " + m.getName());
-            }
+           em.persist(team);
 
             tx.commit();
         } catch (Exception e) {
