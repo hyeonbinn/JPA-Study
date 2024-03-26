@@ -28,18 +28,10 @@ public class JpaMain {
             member.setTeam(team); //연관관계 주인에 값을 넣어야 함.
             em.persist(member);
 
-            team.getMembers().add(member); //순수 객체 관계를 고려하면 사실 양쪽에 값을 모두 세팅하는 게 맞음
+            /** Member 클래스에 연관관계 편의 메소드를 만들면서 그 안에
+             * 멤버에 팀을 세팅하는 시점에 같이 돌아가도록 코드 추가해놓음**/
+            //team.getMembers().add(member);
 
-            /**
-             * Member member = new Member();
-* *            member.setName("member1");
-* *            em.persist(member);
-* *
-             * Team team = new Team();
-*             team.setName("TeamA");
-              team.getMembers().add(member); //이렇게하면 안됨! => TEAM_ID가 null이 됨. mappedBy이므로 읽기만 가능. 변경할 때 아예 안 봄.
-*             em.persist(team);
-             **/
 
             em.flush();
             em.clear();
