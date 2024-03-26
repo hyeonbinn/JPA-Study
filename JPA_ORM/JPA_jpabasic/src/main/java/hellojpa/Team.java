@@ -12,6 +12,9 @@ public class Team {
     @Column(name = "TEAM_ID")
     private Long id;
     private String name;
+
+    @OneToMany(mappedBy = "team") //양방향 참조하도록 설정
+    private List<Member> members = new ArrayList<>();
     public Long getId() {
         return id;
     }
