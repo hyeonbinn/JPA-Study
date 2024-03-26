@@ -2,22 +2,17 @@ package hellojpa;
 import jakarta.persistence.*;
 
 @Entity
-@SequenceGenerator(
-        name = "MEMBER_SEQ_GENERATOR",
-        sequenceName = "MEMBER_SEQ",
-        initialValue = 1, allocationSize = 50) //50개를 미리 DB에 올려놓고 사용
 public class Member {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-                   generator = "MEMBER_SEQ_GENERATOR")
+    @Id @GeneratedValue
     private Long id;
-    @Column(name = "name", nullable = false)
-    private String username;
+    @Column(name = "USERNAME")
+    private String name;
 
-    public Member(){
-
-    }
+//    @Column(name = "TEAM_ID")
+//    private Long teamId;
+    @ManyToOne
+    @JoinColumn(name="TEAM_ID")
+    private Team team; //위 코드 대체
 
     public Long getId() {
         return id;
@@ -27,11 +22,20 @@ public class Member {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+        team.getMembers().add(this); //연관관계 편의 메소드
     }
 }
