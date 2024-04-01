@@ -5,7 +5,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
-import java.util.List;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -17,17 +16,20 @@ public class JpaMain {
         tx.begin(); // transaction 시작
 
         try {
-           Member member = new Member();
-           member.setName("member1");
 
-           em.persist(member);
+            Movie movie = new Movie();
+            movie.setDirector("directorA");
+            movie.setActor("actorA");
+            movie.setName("바람과 함께 사라지다.");
+            movie.setPrice(10000);
 
-           Team team = new Team();
-           team.setName("teamA");
-           //외래키가 member 테이블에 있기에 update 쿼리가 member에 나감.
-           team.getMembers().add(member);
+            em.persist(movie);
 
-           em.persist(team);
+            em.flush();
+            em.clear();
+
+            Movie findMovie = em.find(Movie.class, movie.getId());
+            System.out.println("findMovie = " + findMovie);
 
             tx.commit();
         } catch (Exception e) {
