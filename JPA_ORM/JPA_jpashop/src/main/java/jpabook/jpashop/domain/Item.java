@@ -1,13 +1,11 @@
 package jpabook.jpashop.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
-public class Item {
-
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn
+public abstract class Item extends BaseEntity{ //추상클래스 (Item만 단독으로 테이블에 저장할 일 없다고 가정)
     @Id
     @GeneratedValue
     @Column(name = "ITEM ID")
