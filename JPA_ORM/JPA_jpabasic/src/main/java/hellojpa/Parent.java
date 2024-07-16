@@ -14,13 +14,18 @@ public class Parent {
     private String name;
 
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Child> childList = new ArrayList<>();
 
     public void addChild(Child child) {
         childList.add(child);
         child.setParent(this);
     }
+
+    public List<Child> getChildList() {
+        return childList;
+    }
+
     public Long getId() {
         return id;
     }
