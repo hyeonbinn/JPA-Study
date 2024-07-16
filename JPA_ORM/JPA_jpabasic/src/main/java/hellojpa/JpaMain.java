@@ -21,20 +21,20 @@ public class JpaMain {
             member1.setName("member1");
             em.persist(member1);
 
-            Member member2 = new Member();
-            member2.setName("member2");
-            em.persist(member2);
 
             em.flush();
             em.clear();
 
-            Member m1 = em.find(Member.class, member1.getId());
-            Member m2 = em.getReference(Member.class, member2.getId()); //getReference : 가짜 엔티티 조회
+            Member reality = em.find(Member.class, member1.getId());
+            System.out.println("reality = " + reality.getClass());
+
+            Member reference = em.getReference(Member.class, member1.getId());
+            //위에서 이미 em.find를 했기에 엔티티가 이미 있으므로 em.getReference()를 호출해도 실제 엔티티가 반환됨.
+            System.out.println("reference = " + reference.getClass());
+
+            System.out.println("reality == reference : " + (reality == reference)); //jpa에서는 이를 항상 true가 되도록 보장함.
 
 
-            System.out.println("m1 == m2 : " + (m1.getClass() == m2.getClass())); // false 출력 : 프록시인 객체와 프록시가 아닌 객체는 타입이 맞지 않음
-            System.out.println("m1 instanceof m2 : " + (m1 instanceof Member)); // true 출력
-            System.out.println("m1 instanceof m2 : " + (m2 instanceof Member)); // true 출력
 
             tx.commit();
         } catch (Exception e) {
