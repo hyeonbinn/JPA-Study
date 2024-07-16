@@ -17,21 +17,24 @@ public class JpaMain {
 
         try {
 
-            Member member = new Member();
-            member.setName("hello");
+            Member member1 = new Member();
+            member1.setName("member1");
+            em.persist(member1);
 
-            em.persist(member);
+            Member member2 = new Member();
+            member2.setName("member2");
+            em.persist(member2);
 
             em.flush();
             em.clear();
 
-            //Member findMember = em.find(Member.class, member.getId());
-            Member findMember = em.getReference(Member.class, member.getId()); //getReference : 가짜 엔티티 조회
+            Member m1 = em.find(Member.class, member1.getId());
+            Member m2 = em.getReference(Member.class, member2.getId()); //getReference : 가짜 엔티티 조회
 
-            //System.out.println("findMember = " + findMember.getClass());
-            //System.out.println("findMember.id = " + findMember.getId());
-            System.out.println("findMember.username = " + findMember.getName()); //1번째 : DB에 없으므로 쿼리를 날려 객체를 가져옴
-            System.out.println("findMember.username = " + findMember.getName()); //2번째 : 타겟이 이미 값이 있으므로 바로 출력
+
+            System.out.println("m1 == m2 : " + (m1.getClass() == m2.getClass())); // false 출력 : 프록시인 객체와 프록시가 아닌 객체는 타입이 맞지 않음
+            System.out.println("m1 instanceof m2 : " + (m1 instanceof Member)); // true 출력
+            System.out.println("m1 instanceof m2 : " + (m2 instanceof Member)); // true 출력
 
             tx.commit();
         } catch (Exception e) {
