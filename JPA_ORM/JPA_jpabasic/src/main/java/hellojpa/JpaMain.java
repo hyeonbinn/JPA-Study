@@ -21,24 +21,24 @@ public class JpaMain {
             member1.setName("member1");
             em.persist(member1);
 
-
             em.flush();
             em.clear();
 
-            Member reality = em.find(Member.class, member1.getId());
-            System.out.println("reality = " + reality.getClass());
+//            Member reality = em.find(Member.class, member1.getId());
+//            System.out.println("reality = " + reality.getClass());
 
             Member reference = em.getReference(Member.class, member1.getId());
-            //위에서 이미 em.find를 했기에 엔티티가 이미 있으므로 em.getReference()를 호출해도 실제 엔티티가 반환됨.
             System.out.println("reference = " + reference.getClass());
 
-            System.out.println("reality == reference : " + (reality == reference)); //jpa에서는 이를 항상 true가 되도록 보장함.
+            //em.detach(reference); //reference를 영속성 컨텍스트에서 관리 안 해!
+            em.close(); //영속성 컨텍스트를 끔
 
-
+            reference.getName();
 
             tx.commit();
         } catch (Exception e) {
             tx.rollback(); // 문제가 생가면 롤백
+            e.printStackTrace();
         } finally {
             em.close();
         }
