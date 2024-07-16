@@ -18,27 +18,16 @@ public class JpaMain {
         tx.begin(); // transaction 시작
 
         try {
+            Child child1 = new Child();
+            Child child2 = new Child();
 
-            Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
 
-            Member member1 = new Member();
-            member1.setName("member1");
-            member1.setTeam(team);
-            em.persist(member1);
-
-            em.flush();
-            em.clear();
-
-            //Member m = em.find(Member.class, member1.getId());
-
-            /** EAGER로 설정 시 JPQL에서 N+1 문제 발생
-            MEMBER와 TEAM을 같이 조회해야 한다면, JPQL에서 fetch join을 사용해야 함 **/
-            List<Member> members = em.createQuery("select m from Member m", Member.class).getResultList();
-
-            //SQL : select * from Member
-            //SQL : select * from TEAM where TEAM_ID = xxx
+            em.persist(parent);
+//            em.persist(child1);
+//            em.persist(child2);
 
             tx.commit();
         } catch (Exception e) {
