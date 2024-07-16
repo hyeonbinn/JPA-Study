@@ -5,8 +5,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
-import java.time.LocalDateTime;
-
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -20,14 +18,20 @@ public class JpaMain {
         try {
 
             Member member = new Member();
-            member.setName("user1");
-            member.setCreatedBy("kim");
-            member.setCreatedDate(LocalDateTime.now());
+            member.setName("hello");
 
             em.persist(member);
 
             em.flush();
             em.clear();
+
+            //Member findMember = em.find(Member.class, member.getId());
+            Member findMember = em.getReference(Member.class, member.getId()); //getReference : 가짜 엔티티 조회
+
+            //System.out.println("findMember = " + findMember.getClass());
+            //System.out.println("findMember.id = " + findMember.getId());
+            System.out.println("findMember.username = " + findMember.getName()); //1번째 : DB에 없으므로 쿼리를 날려 객체를 가져옴
+            System.out.println("findMember.username = " + findMember.getName()); //2번째 : 타겟이 이미 값이 있으므로 바로 출력
 
             tx.commit();
         } catch (Exception e) {
