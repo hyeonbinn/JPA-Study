@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
+import java.util.List;
+
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -17,23 +19,26 @@ public class JpaMain {
 
         try {
 
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
             Member member1 = new Member();
             member1.setName("member1");
+            member1.setTeam(team);
             em.persist(member1);
 
             em.flush();
             em.clear();
 
-//            Member reality = em.find(Member.class, member1.getId());
-//            System.out.println("reality = " + reality.getClass());
+            //Member m = em.find(Member.class, member1.getId());
 
-            Member reference = em.getReference(Member.class, member1.getId());
-            System.out.println("reference = " + reference.getClass());
+            /** EAGER로 설정 시 JPQL에서 N+1 문제 발생
+            MEMBER와 TEAM을 같이 조회해야 한다면, JPQL에서 fetch join을 사용해야 함 **/
+            List<Member> members = em.createQuery("select m from Member m", Member.class).getResultList();
 
-            //em.detach(reference); //reference를 영속성 컨텍스트에서 관리 안 해!
-            em.close(); //영속성 컨텍스트를 끔
-
-            reference.getName();
+            //SQL : select * from Member
+            //SQL : select * from TEAM where TEAM_ID = xxx
 
             tx.commit();
         } catch (Exception e) {
