@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/*
 @Entity
 public class Team extends BaseEntity{
 
@@ -38,4 +38,4 @@ public class Team extends BaseEntity{
     public void setMembers(List<Member> members) {
         this.members = members;
     }
-}
+}*/
