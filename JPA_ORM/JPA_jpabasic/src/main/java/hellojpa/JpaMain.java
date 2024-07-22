@@ -28,8 +28,8 @@ public class JpaMain {
             member.getFavoriteFoods().add("명란");
             member.getFavoriteFoods().add("초밥");
 
-            member.getAddressHistory().add(new Address("old1", "street", "10000"));
-            member.getAddressHistory().add(new Address("old2", "street", "10000"));
+            member.getAddressHistory().add(new AddressEntity("old1", "street", "10000"));
+            member.getAddressHistory().add(new AddressEntity("old2", "street", "10000"));
 
             em.persist(member);
 
@@ -39,16 +39,19 @@ public class JpaMain {
             System.out.println("========= START =============");
             Member findMember = em.find(Member.class, member.getId());
 
-            List<Address> addressHistory = findMember.getAddressHistory();
-            for(Address address : addressHistory) {
-                System.out.println("address = " + address.getCity());
-            }
+            //homeCity -> newCity로 수정 시
+            //findMember.getHomeAddress().setCity("newCity"); //이렇게 쓰면 안됨
 
-            Set<String> favoriteFoods = findMember.getFavoriteFoods();
-            for (String favoriteFood : favoriteFoods) {
-                System.out.println("favoriteFood = " + favoriteFood);
-            }
+            //이렇게 값 타입 자체를 통으로 새로 넣어야 함
+//            Address a = findMember.getHomeAddress();
+//            findMember.setHomeAddress(new Address("newCity", a.getStreet(), a.getZipcode()));
+//
+//            //치킨 -> 한식
+//            findMember.getFavoriteFoods().remove("육회");
+//            findMember.getFavoriteFoods().add("피자");
 
+            findMember.getAddressHistory().remove(new AddressEntity("old1", "street","10000"));
+            findMember.getAddressHistory().add(new AddressEntity("newCity1", "street","10000"));
             tx.commit();
         } catch (Exception e) {
             tx.rollback(); // 문제가 생가면 롤백
