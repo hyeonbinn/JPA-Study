@@ -23,7 +23,7 @@ public class JpaMain {
             Member member = new Member();
             member.setUsername("member1");
             member.setHomeAddress(new Address("homeCity", "street", "10000"));
-            
+
             member.getFavoriteFoods().add("육회");
             member.getFavoriteFoods().add("명란");
             member.getFavoriteFoods().add("초밥");
@@ -50,8 +50,8 @@ public class JpaMain {
 //            findMember.getFavoriteFoods().remove("육회");
 //            findMember.getFavoriteFoods().add("피자");
 
-            findMember.getAddressHistory().remove(new AddressEntity("old1", "street","10000"));
-            findMember.getAddressHistory().add(new AddressEntity("newCity1", "street","10000"));
+//            findMember.getAddressHistory().remove(new AddressEntity("old1", "street","10000"));
+//            findMember.getAddressHistory().add(new AddressEntity("newCity1", "street","10000"));
             tx.commit();
         } catch (Exception e) {
             tx.rollback(); // 문제가 생가면 롤백

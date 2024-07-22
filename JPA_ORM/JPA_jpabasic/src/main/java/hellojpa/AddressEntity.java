@@ -3,8 +3,12 @@ package hellojpa;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import java.lang.annotation.Target;
 
 @Entity
+@Table(name = "ADDRESS")
 public class AddressEntity {
 
     @Id @GeneratedValue
