@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
+
 /**
  *
  * xToOne(ManyToOne, OneToOne) 에서의 성능 최적화를 어떻게 할 것인가!!
@@ -48,8 +50,18 @@ public class OrderSimpleApiController {
         List<Order> orders = orderRepository.findAllByString(new OrderSearch());
         List<SimpleOrderDto> collect = orders.stream()
                 .map(SimpleOrderDto::new)
-                .collect(Collectors.toList());
+                .collect(toList());
         return collect;
+    }
+
+    @GetMapping("/api/v3/orders")
+    public List<SimpleOrderDto> ordersV3() {
+        List<Order> orders = orderRepository.findAllWithMemberDelivery();
+
+        List<SimpleOrderDto> result = orders.stream()
+                .map(o -> new SimpleOrderDto(o))
+                .collect(toList());
+        return result;
     }
 
     @Data
