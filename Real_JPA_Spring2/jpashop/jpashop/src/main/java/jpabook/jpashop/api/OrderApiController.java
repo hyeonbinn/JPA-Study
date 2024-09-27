@@ -58,6 +58,24 @@ public class OrderApiController {
         return collect;
     }
 
+    /**
+     * V2에서는 DTO에 데이터를 넣기 위해 LAZY 객체들을 모두 불러와야 하는데, 반복문으로 각 객체를 하나 하나 돌기에 N+1문제가 발생함
+     * V3에서 페치조인으로 N+1문제를 해결!!
+     */
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> ordersV3() {
+        List<Order> orders = orderRepository.findAllWithItem();
+
+        for (Order order : orders) {
+            System.out.println("order ref = " + order + "id = " + order.getId());
+        }
+
+        List<OrderDto> collect = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+        return collect;
+    }
+
     @Getter
     static class OrderDto {
 
