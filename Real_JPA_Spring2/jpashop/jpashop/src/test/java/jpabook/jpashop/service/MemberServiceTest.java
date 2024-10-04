@@ -30,7 +30,7 @@ public class MemberServiceTest {
         Long savedId = memberService.join(member);
 
         //then
-        Assertions.assertEquals(member, memberRepository.findOne(savedId));
+        Assertions.assertEquals(member, memberRepository.findById(savedId));
     }
 
     @Test
