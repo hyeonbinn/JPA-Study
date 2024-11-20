@@ -65,6 +65,6 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-/*clean {
+clean {
 	delete file('src/main/generated')
-}*/
+}
