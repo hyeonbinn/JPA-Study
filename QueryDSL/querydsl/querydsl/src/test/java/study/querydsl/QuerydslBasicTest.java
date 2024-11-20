@@ -3,8 +3,10 @@ package study.querydsl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static study.querydsl.entity.QMember.*;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.entity.Member;
 import study.querydsl.entity.QMember;
 import study.querydsl.entity.Team;
+
+import java.util.List;
 
 
 @SpringBootTest
@@ -102,4 +106,34 @@ public class QuerydslBasicTest {
      * member.username.startsWith("member") //like ‘member%’ 검색
      * ...
      * **/
+
+    @Test
+    /**
+     * fetchResults() : 페이징 정보 포함, total count 쿼리 추가 실행
+     * fetchCount() : count 쿼리로 변경해서 count 수 조회
+     * **/
+
+    void resultFetch() {
+        List<Member> fetch = queryFactory //fetch() : 리스트 조회, 데이터 없으면 빈 리스트 반환
+                .selectFrom(member)
+                .fetch();
+        Member fetchOne = queryFactory //fetchOne() : 단 건 조회 (결과가 없으면 null, 둘 이상이면 NonUniqueResultException)
+                .selectFrom(member)
+                .fetchOne();
+
+        // fetchFirst은 limit(1).fetchOne과 같다.
+        Member fetchFirst = queryFactory
+                .selectFrom(member)
+                .fetchFirst();
+
+        QueryResults<Member> results = queryFactory
+                .selectFrom(member)
+                .fetchResults(); // 실제로는 페이징쿼리가 복잡해지면 성능 때문에 결과가 달라질 수 있어 사용하지 않음 >> count 쿼리를 따로 날리는게 좋음!
+
+
+        // count 쿼리 >> select절을 count 쿼리로 바꾼 것이라고 생각.
+        Long total = queryFactory
+                .selectFrom(member)
+                .fetchCount();
+    }
 }
