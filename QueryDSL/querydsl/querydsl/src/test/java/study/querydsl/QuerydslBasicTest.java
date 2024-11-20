@@ -72,4 +72,34 @@ public class QuerydslBasicTest {
          * fetchOne() : 결과 하나 가져오기
          * **/
     }
+
+
+    @Test
+    void search() {
+        Member findMember = queryFactory
+                .selectFrom(member) //select와 from을 합쳐서 쓸 수 있음.
+                .where(member.username.eq("member1") //eq:같다
+                        .and(member.age.eq(10))) // and를 쓰지 않고 쉼표로 이어도 같은 의미.
+                .fetchOne();
+        assertThat(findMember.getUsername()).isEqualTo("member1");
+    }
+
+    /**
+     * 웬만한 것은 모두 지원.
+     * member.username.eq("member1") // username = 'member1'
+     * member.username.ne("member1") //username != 'member1'
+     * member.username.eq("member1").not() // username != 'member1'
+     * member.username.isNotNull() //이름이 is not null
+     * member.age.in(10, 20) // age in (10,20)
+     * member.age.notIn(10, 20) // age not in (10, 20)
+     * member.age.between(10,30) //between 10, 30
+     * member.age.goe(30) // age >= 30
+     * member.age.gt(30) // age > 30
+     * member.age.loe(30) // age <= 30
+     * member.age.lt(30) // age < 30
+     * member.username.like("member%") //like 검색
+     * member.username.contains("member") // like ‘%member%’ 검색
+     * member.username.startsWith("member") //like ‘member%’ 검색
+     * ...
+     * **/
 }
