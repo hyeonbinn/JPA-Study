@@ -288,5 +288,52 @@ public class QuerydslBasicTest {
     }
 
     //세타 조인에서는 외부 조인이 불가능했지만, 이제는 on절을 사용해 가능
+
+
+    /** ON절을 활용한 조인(JPA 2.1부터 지원)
+        1. 조인 대상 필터링
+        2. 연관관계 없는 엔티티 외부 조인
+     **/
+
+    /**
+     * 1. 조인 대상 필터링
+     *
+     * 예) 회원과 팀을 조인하면서, 팀 이름이 teamA인 팀만 조인, 회원은 모두 조회
+     * JPQL: SELECT m, t FROM Member m LEFT JOIN m.team t on t.name = 'teamA'
+     * SQL: SELECT m.*, t.* FROM Member m LEFT JOIN Team t ON m.TEAM_ID=t.id and
+     t.name='teamA'
+     */
+    @Test
+    public void join_on_filtering() throws Exception {
+        List<Tuple> result = queryFactory
+                .select(member, team)
+                .from(member)
+                .leftJoin(member.team, team).on(team.name.eq("teamA")) //외부 조인이 아니라 내부 조인을 사용하면, where 절에서 필터링 하는 것과 기능이 동일하다!!
+                .fetch();
+        for (Tuple tuple : result) {
+            System.out.println("tuple = " + tuple); }
+    }
+
+    /** 2. 연관관계 없는 엔티티 외부 조인 **/
+
+    /**
+     * 예) 회원의 이름과 팀의 이름이 같은 대상 외부 조인
+     * JPQL: SELECT m, t FROM Member m LEFT JOIN Team t on m.username = t.name
+     * SQL: SELECT m.*, t.* FROM Member m LEFT JOIN Team t ON m.username = t.name
+     */
+    @Test
+    public void join_on_no_relation() throws Exception {
+        em.persist(new Member("teamA",0,null));
+        em.persist(new Member("teamB",0,null));
+        List<Tuple> result = queryFactory
+                .select(member, team)
+                .from(member)
+                //on 조인은 일반 조인과 다르게 엔티티가 하나만 들어간다!
+                //조인 대상이 바로 들어가고, on절에서 원하는 조건이 들어간다!!
+                .leftJoin(team).on(member.username.eq(team.name))
+                .fetch();
+        for (Tuple tuple : result) {
+            System.out.println("t=" + tuple);
+        }}
 }
 
