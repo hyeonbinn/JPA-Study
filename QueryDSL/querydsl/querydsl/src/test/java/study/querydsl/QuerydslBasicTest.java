@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.entity.Member;
 import study.querydsl.entity.QMember;
+import study.querydsl.entity.QTeam;
 import study.querydsl.entity.Team;
 
 import java.util.List;
@@ -235,17 +236,57 @@ public class QuerydslBasicTest {
         List<Tuple> result = queryFactory
                 .select(team.name, member.age.avg())
                 .from(member)
-                .join(member.team, team)
+                .join(member.team, team) //member와 team 조인
                 .groupBy(team.name)
                 .fetch();
-        
-        Tuple teamA = result.get(0);
-        Tuple teamB = result.get(1);
+
+        Tuple teamA = result.get(0); //0번 튜픟
+        Tuple teamB = result.get(1); //1번 튜픟
 
         assertThat(teamA.get(team.name)).isEqualTo("teamA");
         assertThat(teamA.get(member.age.avg())).isEqualTo(15);
         assertThat(teamB.get(team.name)).isEqualTo("teamB");
         assertThat(teamB.get(member.age.avg())).isEqualTo(35);
     }
+
+    /** 조인 - 기본 조인 **/
+    /**
+     * 팀 A에 소속된 모든 회원
+     */
+    @Test
+    public void join() {
+        List<Member> result = queryFactory
+                .selectFrom(member)
+                .join(member.team, team) //inner join과 동일. (left join, right join 등도 가능함)
+                .where(team.name.eq("teamA"))
+                .fetch();
+
+        assertThat(result)
+                .extracting("username")
+                .containsExactly("member1", "member2");
+    }
+
+    /**
+     * 세타 조인(연관관계가 없어도 필드로 조인이 가능하다.)
+     * 회원의 이름이 팀 이름과 같은 회원 조회
+     */
+    @Test
+    public void theta_join()  {
+        em.persist(new Member("teamA",0,null));
+        em.persist(new Member("teamB",0,null));
+        em.persist(new Member("teamC",0,null));
+
+        List<Member> result = queryFactory
+                .select(member)
+                .from(member, team) //우선 모두 조인을 하고
+                .where(member.username.eq(team.name)) //where 절에서 필터링
+                .fetch();
+
+        assertThat(result)
+                .extracting("username")
+                .containsExactly("teamA", "teamB");
+    }
+
+    //세타 조인에서는 외부 조인이 불가능했지만, 이제는 on절을 사용해 가능
 }
 
