@@ -8,6 +8,7 @@ import static study.querydsl.entity.QTeam.team;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -468,6 +469,34 @@ public class QuerydslBasicTest {
 
         for (String s : result) {
             System.out.println("s= " + s);
+        }
+    }
+
+    /** 상수, 문자 더하기 **/
+    @Test
+    public void constance() {
+        List<Tuple> result = queryFactory
+                .select(member.username, Expressions.constant("A")) //Expressions를 사용해 문자를 가져올 수 있다.
+                .from(member)
+                .fetch();
+
+        for (Tuple tuple : result) {
+            System.out.println("tuple = " + tuple);
+
+        }
+    }
+
+    @Test
+    public void concat() {
+        //{username}_{age}
+        List<String> result = queryFactory
+                .select(member.username.concat("_").concat(member.age.stringValue())) //stringValue를 사용해 age의 타입을 String으로 바꾸고 concat한다. 보통 enum에 많이 쓰임
+                .from(member)
+                .where(member.username.eq("member1"))
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s = " + s);
         }
     }
 }
