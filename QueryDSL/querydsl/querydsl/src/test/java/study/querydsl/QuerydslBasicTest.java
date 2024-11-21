@@ -7,6 +7,7 @@ import static study.querydsl.entity.QTeam.team;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -433,5 +434,43 @@ public class QuerydslBasicTest {
 
     /** 쿼리는 데이터를 가져오는 것에만 집중하는 게 좋음..!!
      *  쿼리에서 모든 걸 다 해결하려고 하면 from 안에 from안에,,이렇게 됨 **/
+
+
+
+    /** Case 뮨 **/
+
+    // 이런 case 마다의 로직은 애플리케이션에서 하는 게 좋음.
+    // DB에서는 값을 가져오는 용도로만 사용하는 것이 좋음
+    @Test
+    public void baseCase() { //단순 조건
+        List<String> result = queryFactory
+                .select(member.age
+                        .when(10).then("열살")
+                        .when(20).then("스무살")
+                        .otherwise("기타"))
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s= " + s);
+        }
+    }
+
+    @Test
+    public void complexCase() { //복잡한 조건
+        List<String> result = queryFactory
+                .select(new CaseBuilder()    // CaseBuilder를 사용할 수 있다.
+                        .when(member.age.between(0, 20)).then("0~20살")
+                        .when(member.age.between(21, 30)).then("21~30살")
+                        .otherwise("기타"))
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s= " + s);
+        }
+    }
 }
+
+
 
