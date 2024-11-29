@@ -499,6 +499,35 @@ public class QuerydslBasicTest {
             System.out.println("s = " + s);
         }
     }
+
+
+    @Test
+    public void simpleProjection() { // 프로젝션 결과가 하나인 것.
+        List<String> result = queryFactory
+                .select(member.username) //타입이 하나
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s = " + s);
+        }
+    }
+
+    @Test
+    public void tupleProjection() { // 프로젝션 결과가 여러 개인 것.
+        List<Tuple> result = queryFactory
+                .select(member.username, member.age)
+                .from(member)
+                .fetch();
+
+        for (Tuple tuple : result) {
+            String username = tuple.get(member.username); //tuple.get으로 각각 꺼내올 수 있음. 반환타입도 자동으로 맞춰줌.
+            Integer age = tuple.get(member.age);
+            System.out.println("username = " + username);
+            System.out.println("age = " + age);
+        }
+    }
+    //
 }
 
 
