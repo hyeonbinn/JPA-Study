@@ -13,6 +13,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.util.ArrayList;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,6 +34,9 @@ public class Member {
     private Team team;
     public void mappingTeam(Team team) {
         this.team = team;
+        if (team.getMembers() == null) { // null 체크
+            team.setMembers(new ArrayList<>());
+        }
         team.getMembers().add(this);
     }
     @Builder

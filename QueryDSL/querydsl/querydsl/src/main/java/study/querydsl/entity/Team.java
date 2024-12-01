@@ -33,5 +33,10 @@ public class Team {
 
     public Team(String name) {
         this.name = name;
+        this.members = new ArrayList<>();
+    }
+
+    public void setMembers(List<Member> members) {
+        this.members = members;
     }
 }
