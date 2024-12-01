@@ -48,24 +48,33 @@
 <br/>
 
 ### 프로젝션과 결과 반환 - @QueryProjection
+>@QueryProjection은 DTO 클래스에 직접 QueryDSL과 연동 가능한 Q클래스를 생성하도록 설정하는 방법이다.
 - MemberDto에 바로 @QueryProjection을 적어주고, Gradle > other > compileQuerydsl을 실행하면,
 - DTO도 Q파일로 생성이 된다!! (DTO를 Q객체화 해서 사용 가능)
-- 이를 사용할 때 생성자를 그대로 가져오기 때문에 타입 체크를 할 수 있어 안정적으로 코드를 작성할 수 있다. (cmd+p) <br>
+- 이를 사용할 때 생성자를 그대로 가져오기 때문에 컴파일 시점에 타입 오류를 잡을 수 있어 안정적인 코드를 작성할 수 있다. (cmd+p) 
+  - 예를 들어, DTO의 생성자에 잘못된 타입을 전달했을 경우, 런타임이 아닌 컴파일 시점에 오류를 확인할 수 있다.
 <br>
 - @QueryProjection과 constructor의 차이점은?
   - constructor는 컴파일 시점에 오류를 잡지 못하고, 런타임에 오류를 잡는다.
   - 똑같은 문제를 @QueryProjection를 사용해 해결하면, 컴파일 시점에 오류를 잡아준다. <br>
 <br>
 - 단점
-  - DTO까지 Q파일을 생성해야 하는 점.
-  - Querydsl에 대한 의존성을 가지게 된다는 점.
+  - DTO까지 Q파일을 생성해야 하는 추가적인 빌드 작업이 필요하다.
+  - Querydsl에 대한 의존성을 가지게 되어, QueryDSL을 제거하거나 다른 라이브러리로 대체하기 어려울 수 있다.
 
 <br/>
 
 ### 동적 쿼리를 해결하는 방법
 1. BooleanBuilder를 사용하는 방법
-2. Where문 안에 다중 파라미터를 사용하는 방법
+2. Where문 안에 다중 파라미터를 사용하는 방법<br>
+   <br>
 
 #### BooleanBuilder를 사용하는 방법
+>QueryDSL에서 동적 조건을 간편하게 추가할 수 있도록 도와주는 도구이다.
 - 우선 BooleanBuilder를 만들어야 한다.(초기 조건을 넣어줄 수도 있다.)
-- 동적 쿼리를 and, or를 통해 유연하게 처리할 수 있다.
+- 특정 조건이 만족되면 and 또는 or 메서드를 사용해 조건을 추가할 수 있따.
+- 최종적으로 where절에 BooleanBuilder를 전달해 동적 쿼리를 실행한다. <br>
+<br>
+- 장점
+  - 가독성이 좋고, 조건 추가가 유연하다.
+  - 여러 조건을 동적으로 추가할 수 있다.
