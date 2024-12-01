@@ -44,3 +44,28 @@
 #### 생성자 사용
 - Projections.constructor를 사용해 생성자를 통해 값을 주입한다.
 - 필드 이름이 아닌 타입 기반으로 데이터를 매핑하므로 이름 매칭 오류를 방지할 수 있다.
+
+<br/>
+
+### 프로젝션과 결과 반환 - @QueryProjection
+- MemberDto에 바로 @QueryProjection을 적어주고, Gradle > other > compileQuerydsl을 실행하면,
+- DTO도 Q파일로 생성이 된다!! (DTO를 Q객체화 해서 사용 가능)
+- 이를 사용할 때 생성자를 그대로 가져오기 때문에 타입 체크를 할 수 있어 안정적으로 코드를 작성할 수 있다. (cmd+p) <br>
+<br>
+- @QueryProjection과 constructor의 차이점은?
+  - constructor는 컴파일 시점에 오류를 잡지 못하고, 런타임에 오류를 잡는다.
+  - 똑같은 문제를 @QueryProjection를 사용해 해결하면, 컴파일 시점에 오류를 잡아준다. <br>
+<br>
+- 단점
+  - DTO까지 Q파일을 생성해야 하는 점.
+  - Querydsl에 대한 의존성을 가지게 된다는 점.
+
+<br/>
+
+### 동적 쿼리를 해결하는 방법
+1. BooleanBuilder를 사용하는 방법
+2. Where문 안에 다중 파라미터를 사용하는 방법
+
+#### BooleanBuilder를 사용하는 방법
+- 우선 BooleanBuilder를 만들어야 한다.(초기 조건을 넣어줄 수도 있다.)
+- 동적 쿼리를 and, or를 통해 유연하게 처리할 수 있다.
