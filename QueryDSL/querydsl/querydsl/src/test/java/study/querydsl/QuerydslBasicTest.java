@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.dto.MemberDto;
 import study.querydsl.dto.QMemberDto;
@@ -696,6 +697,90 @@ public class QuerydslBasicTest {
     private BooleanExpression allEq(String usernameParam, Integer ageParam) {
         // 개별 조건들을 조립해 한 번에 적용할 수 있다.
         return usernameEq(usernameParam).and(ageEq(ageParam));
+    }
+
+    @Test
+    @Commit
+    public void bulkUpdate() {
+        /**
+         * member1 = 10 >> member1
+         * member2 = 20 >> member2
+         * member3 = 30 >> member3
+         * member4 = 40 >> member4
+         * **/
+
+        //update와 set을 사용하여 특정 조건에 해당하는 데이터를 수정
+        long count = queryFactory
+                .update(member)
+                .set(member.username, "비회원") // '비회원'으로 username 변경
+                .where(member.age.lt(28))  // 나이가 28 미만인 회원만!
+                .execute();
+
+        // 수정 이후 영속성 컨텍스트와 DB 간 데이터 불일치가 발생할 수 있으니, 컨텍스트 초기화가 필요하다.
+        em.flush();
+        em.clear();
+
+        /** update 쿼리 실행 이후
+         * member1 = 10 >> 비회원
+         * member2 = 20 >> 비회원
+         * member3 = 30 >> member3
+         * member4 = 40 >> member4
+         * **/
+
+        List<Member> result = queryFactory
+                .selectFrom(member)
+                .fetch();
+
+        for (Member member1 : result) {
+            System.out.println("member1 = " + member1);
+        }
+    }
+
+    @Test
+    public void bulkAdd() { // 기존 값에 숫자 더하기
+        long count = queryFactory
+                .update(member)
+                .set(member.age, member.age.add(1)) //모든 회원의 나이에 1씩 더하기.
+                .execute();
+    }
+
+    @Test
+    public void bulkDelete() {
+        long count = queryFactory
+                .delete(member)
+                .where(member.age.gt(18))
+                .execute();
+    }
+
+    @Test
+    public void sqlFunction() {
+        List<String> result = queryFactory
+                .select(
+                        Expressions.stringTemplate(
+                                "function('replace', {0}, {1}, {2})",
+                                member.username, "member", "M")) //member라는 단어를 M이라고 바꿔서 조회한다. (replace 함수 사용)
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s = " + s);
+        }
+
+    }
+
+    @Test
+    public void sqlFunction2() throws Exception {
+        List<String> result = queryFactory
+                .select(member.username)
+                .from(member)
+//          .where(member.username.eq(
+//                    Expressions.stringTemplate("function('lower', {0})", member.username))) // 이 기능을
+                .where(member.username.eq(member.username.lower())) // 표준에 내장되어 있기 때문에, 이렇게 작성해 사용할 수 있다.
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s : "+s);
+        }
     }
 }
 
