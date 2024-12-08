@@ -2,6 +2,7 @@ package study.querydsl;
 
 import static com.querydsl.jpa.JPAExpressions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.setAllowComparingPrivateFields;
 import static study.querydsl.entity.QMember.*;
 import static study.querydsl.entity.QTeam.team;
 
@@ -9,7 +10,9 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -660,6 +663,39 @@ public class QuerydslBasicTest {
                 .selectFrom(member)
                 .where(builder) //builder에 나온 결과를 where절에 넣어준면 된다!
                 .fetch();
+    }
+
+
+    @Test
+    public void dynamicQuery_WhereParam() {
+        String usernameParam = "member1";
+        Integer ageParam = 10;
+
+        List<Member> result = searchMember2 (usernameParam, ageParam);
+        assertThat(result.size()).isEqualTo(1);
+
+
+     }
+
+     private  List<Member> searchMember2(String usernameParam, Integer ageParam) {
+        return queryFactory
+                .selectFrom(member)
+     //           .where(usernameEq(usernameParam), ageEq(ageParam))
+                .where(allEq(usernameParam,ageParam)) // 조립된 조건을 where 절에 전달해 사용할 수 있다.
+                .fetch();
+     }
+
+    private BooleanExpression usernameEq(String usernameParam) { // 각각의 조건을 생성하는 메서드
+        return usernameParam != null ? member.username.eq(usernameParam) : null;
+    }
+
+    private BooleanExpression ageEq(Integer ageParam) { // 각각의 조건을 생성하는 메서드
+        return  ageParam != null ? member.age.eq(ageParam) : null;
+    }
+
+    private BooleanExpression allEq(String usernameParam, Integer ageParam) {
+        // 개별 조건들을 조립해 한 번에 적용할 수 있다.
+        return usernameEq(usernameParam).and(ageEq(ageParam));
     }
 }
 
