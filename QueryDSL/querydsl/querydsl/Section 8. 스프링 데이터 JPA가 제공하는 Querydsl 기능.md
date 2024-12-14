@@ -12,6 +12,22 @@
 2. 클라이언트가 Querydsl에 의존해야 한다. >> 즉 서비스 클래스가 Querydsl이라는 구현 기술에 의존해야 한다.
    - 리포지토리를 만드는 이유는 querydsl과 같은 구체화된 기능을 하부에 숨기기 위해. (기능이 바뀌도 그 부분만 바뀌면 되기에)
    - 하지만 이 상황에서는 서비스, 컨트롤러 로직이 querydsl에 의존하고 있기에 좋지 않다. (같은 순수한 자바 클래스를 넘기는 게 아니라 querydsl를 만들어 넘겨야 함)
-3. 복잡한 실무환경에서 사용하기에는 한계가 명확하다.
+3. 복잡한 실무환경에서 사용하기에는 한계가 명확하다.<br>
+<br>
+
+### Querydsl Web 지원
+[공식 URL 참고](https://docs.spring.io/spring-data/jpa/docs/2.2.3.RELEASE/reference/html/#core.web.type-safe)
+
+- @QuerydslPredicate(root= User.class)를 넘겨주면 요청 파라미터 정보를 predicate로 변환해서 받게 된다.
+  - 예를 들어 ?firstname=Dave&lastname=Matthews >> 이런식으로 파라미터를 넘겨주면
+  - QUser.user.firstname.eq("Dave").and(QUser.user.lastname.eq("Matthews")) >> 와 같이 predicate를 만들어서 파라미터 바인딩을 해준다.
+
+<한계점>
+1. 단순한 조건만 가능 (거의 eq만 가능하다고 보면 된다)
+2. 조건을 커스텀하는 기능이 복잡하고 명시적이지 않다.
+3. 컨트롤러가 Querydsl에 의존한다.
+-> 복잡한 실무 환경에서 사용하기에는 한계가 명확. 그냥 쓰지 말자..!! <br>
+<br>
+
 
  
