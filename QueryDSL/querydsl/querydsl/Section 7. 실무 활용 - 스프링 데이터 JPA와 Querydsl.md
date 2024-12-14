@@ -19,12 +19,23 @@
 - 1. 전체 카운트를 한 번에 조회하는 단순한 방법
   - pageable에서 offset, limit 정보를 추출해서 쿼리 조건에 추가한다.
   - fetchResults()를 사용하면 querydsl이 알아서 totalCountquery를 날려준다. (내용과 전체 카운트를 한 번에 조회할 수 있다. (실제 쿼리가 2번 호출 된다))
--  
+ 
 - 2. 데이터 내용과 전체 카운트를 별도로 조회하는 방법
   - 전체 카운트를 구할 때는 조인과 같은 성능에 영향을 주는 쿼리가 필요 없을 때가 있다. 
   - 그럴 때는 카운트 쿼리를 따로 분리하면 된다. 
     - 1번 방법은 querydsl이 알아서 totalCountquery를 날려줬다면, 이 방법에는 totalQuery를 직접 날리는 것.
     - 카운트 쿼리를 한 번에 조회하면, 최적화를 하지 못한다는 단점이 있다. 즉 카운트 쿼리를 최적화하고 싶다면, 별도로 날려주는 것이 좋다.
-  - +) 코드를 리팩토링해서 내용 쿼리와 전체 카운트 쿼리를 읽기 좋게 분리하면 좋다.
+  - +) 코드를 리팩토링해서 내용 쿼리와 전체 카운트 쿼리를 읽기 좋게 분리하면 좋다.<br>
+    <br>
+
+#### 스프링 데이터 페이징 활용2 - CountQuery 최적화
+- 때에 따라서는 countQuery를 생략할 수 있다.
+- 스프링 데이터 라이브러리가 아래와 같이 count 쿼리가 생략 가능한 경우 생략해서 처리한다.
+  1. 페이지 시작이면서 컨텐츠 사이즈가 페이지 사이즈보다 작을 때
+  2. 마지막 페이지 일 때 (offset + 컨텐츠 사이즈를 더해서 전체 사이즈 구함, 더 정확히는 마지막 페이지이면 서 컨텐츠 사이즈가 페이지 사이즈보다 작을 때
+
+> return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
+- countQuery에서는 fetchCount를 해줘야 실제 countQuery가 날라가는데,
+- content, pageable를 보고 count 쿼리가 생략 가능한 경우에는 getPage안에서 마지막 파라미터인 () -> countQuery.fetchCount() 함수 호출을 하지 않는다.
 
  
